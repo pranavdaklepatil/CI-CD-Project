@@ -27,13 +27,12 @@ EOF
 sudo sysctl --system
 
 echo "===== [5/8] Installing containerd (CRI for Kubernetes v1.24+) ====="
-# Docker is NOT a valid CRI since Kubernetes v1.24 — use containerd directly
 sudo apt install -y containerd
 
 sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml > /dev/null
 
-# CRITICAL: set systemd as cgroup driver — must match kubelet
+
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
 
 sudo systemctl enable containerd
@@ -48,7 +47,6 @@ sudo mkdir -p -m 755 /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key \
   | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-# FIX: repo URL must be on a single line — a line break breaks apt parsing
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" \
   | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
