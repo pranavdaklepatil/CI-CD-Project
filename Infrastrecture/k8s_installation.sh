@@ -1,18 +1,34 @@
-# in case of provisioning " #!/bin/bash "
+#!/bin/bash
 
-sudo apt-get update
+# Update system
+sudo apt update
 
-sudo apt install docker.io -y
+# Install Docker
+sudo apt install -y docker.io
+sudo systemctl enable docker
+sudo systemctl start docker
+
+# Add user to docker group (optional but better than chmod 666)
 sudo chmod 666 /var/run/docker.sock
 
-sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+# Install dependencies
+sudo apt install -y apt-transport-https ca-certificates curl gpg
+
+# Add Kubernetes key
 sudo mkdir -p -m 755 /etc/apt/keyrings
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key \
+  | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+# Add Kubernetes repo
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] \
+https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" \
+| sudo tee /etc/apt/sources.list.d/kubernetes.list
 
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-
+# Update again
 sudo apt update
-sudo apt install -y kubelet=1.28.1-1 kubeadm=1.28.1-1 kubectl=1.28.1-1
 
-# change file permissions to "chmod +x k8s_installation.sh"
+# Install Kubernetes (IMPORTANT: no version suffix)
+sudo apt install -y kubelet kubeadm kubectl
+
+# Hold versions
+sudo apt-mark hold kubelet kubeadm kubectl
