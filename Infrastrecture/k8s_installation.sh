@@ -61,3 +61,5 @@ echo "✅ Installation complete! Verify with:"
 echo "   kubeadm version"
 echo "   kubectl version --client"
 echo "   sudo systemctl status containerd"
+
+# check provisioning log by "cat /var/log/cloud-init-output.log" 

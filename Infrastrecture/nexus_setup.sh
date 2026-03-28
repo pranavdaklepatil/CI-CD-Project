@@ -54,10 +54,12 @@ docker ps --filter name=nexus
 
 echo "   Nexus Repository Manager setup complete!"
 
-echo "🌐 Access Nexus at: http://$(hostname -I | awk '{print $1}'):8081"
+echo "🌐 Access Nexus at: http://$(curl -s ifconfig.me):8081"
 echo ""
 echo "🔑 Default credentials:"
 echo "   Username : admin"
 echo "   Password : run the command below to get it:"
 echo ""
 echo "   docker exec nexus cat /nexus-data/admin.password && echo"
+
+# check provisioning log by "cat /var/log/cloud-init-output.log" 
