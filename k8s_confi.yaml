@@ -68,3 +68,11 @@ subjects:
   kind: ServiceAccount
   name: jenkins 
 
+# Create secret token for the service account "get the token by kubectl -n webapps describe secret mysecretname"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecretname
+  namespace: webapps
+  annotations:
+    kubernetes.io/service-account.name: jenkins
