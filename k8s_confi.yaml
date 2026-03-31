@@ -1,0 +1,14 @@
+#Create a namespace for the application
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: webapps 
+
+
+# Create a service account for the application
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jenkins
+  namespace: webapps
+
