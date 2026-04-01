@@ -124,7 +124,7 @@
   </repository>
   <snapshotRepository>
     <id>maven-snapshots</id>
-    <url>http://13.233.86.13:8081/repository/nuget-hosted/</url>
+    <url>http://13.233.86.13:8081/repository/maven-snapshots/</url>
   </snapshotRepository>
  </distributionManagement>
 </project>
