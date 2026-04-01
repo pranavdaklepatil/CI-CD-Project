@@ -1,20 +1,19 @@
-Pipelie {
+pipeline {
     agent any
 
     tools {
-        jdk 'jdk-17'
-        maven 'maven-3'
+        jdk 'jdk17'
+        maven 'maven3'
     }
 
     environment {
-        SONAR_HOME= tool 'sonar-scanner'
+        SONAR_HOME = tool 'sonar'
     }
 
     stages {
         stage('Git Checkout') {
             steps {
-                git branch 'main',
-                url: 'https://github.com/pranavdaklepatil/CI-CD-Project.git'
+                git branch: 'main', url: 'https://github.com/pranavdaklepatil/CI-CD-Project.git'
             }
         }
 
@@ -26,7 +25,9 @@ Pipelie {
 
         stage('Test') {
             steps {
-                sh 'mvn test'
+               dir('webapplication') {  
+            sh 'mvn compile'
+        }
             }
         }
 
@@ -37,19 +38,18 @@ Pipelie {
         }
 
         stage('SonarQube Analysis') {
-             steps {
+            steps {
                 withSonarQubeEnv('sonar') {
-                    sh '''$SONAR_HOME/bin/sonar-scanner --Dsonar.projectName=CI-CD-Project -Dsonar.projectKey=CI-CD-Project \
+                    sh '''$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=CI-CD-Project -Dsonar.projectKey=CI-CD-Project \
                     -Dsonar.java.binaries=.'''
                 }
             }
-            
         }
 
         stage('Quality Gate') {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar' 
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
                 }
             }
         }
@@ -62,7 +62,7 @@ Pipelie {
 
         stage('Publish Artifacts to Nexus') {
             steps {
-                withMaven(globalMavenSettingsConfig: 'maven-settings' , jdk: 'jdk-17', maven: 'maven3' , mavenSettingsConfig:" ,tracebility: true" ) {
+                withMaven(globalMavenSettingsConfig: 'global-settings', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
                     sh 'mvn deploy'
                 }
             }
@@ -71,10 +71,9 @@ Pipelie {
         stage('Docker Build') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker-cred' ,toolName: 'docker') {
+                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
                         sh "docker build -t pranavdaklepatil/ci-cd-project:latest ."
                     }
-                
                 }
             }
         }
@@ -88,34 +87,31 @@ Pipelie {
         stage('Push Docker Image') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker-cred' ,toolName: 'docker') {
+                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
                         sh "docker push pranavdaklepatil/ci-cd-project:latest"
                     }
-                
                 }
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                withKubeConfig(caCertificate: ", clusterName: 'kubernetes', contextName: ", credentialsId: 'k8s-cred', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://kubernetes.docker.internal:6443') { 
-                     sh 'kubectl apply -f deployment-service.yaml'
+                withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'k8s-token', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://172.31.35.68:6443') {
+                    sh 'kubectl apply -f deployment-service.yaml'
                 }
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                withKubeConfig(caCertificate: ", clusterName: 'kubernetes', contextName: ", credentialsId: 'k8s-cred', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://kubernetes.docker.internal:6443') { 
+                withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'k8s-token', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://172.31.35.68:6443') {
                     sh 'kubectl get pods'
-                    sh 'kubectl get svc '
+                    sh 'kubectl get svc'
                 }
-                
             }
         }
     }
 
-    }
     post {
         always {
             script {
@@ -146,7 +142,6 @@ Pipelie {
                     replyTo: 'pranavdakle445@gmail.com',
                     mimeType: 'text/html',
                     attachmentsPattern: 'trivy-image-report.html'
-
                 )
             }
         }
