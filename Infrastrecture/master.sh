@@ -122,3 +122,10 @@ echo ""
 echo "📌 Verify cluster health from this master:"
 echo "   kubectl get nodes"
 echo "   kubectl get pods -A"
+
+# Run on  master cat "/home/ubuntu/admin.conf" copy output and pest it in the following 
+# mkdir -p $HOME/.kube
+#cat > $HOME/.kube/config << 'EOF'
+#<paste the content here>
+#EOF
+#chown $(id -u):$(id -g) $HOME/.kube/config
