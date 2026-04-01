@@ -98,7 +98,19 @@ Pipelie {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f deployment-service.yaml'
+                withKubeConfig(caCertificate: ", clusterName: 'kubernetes', contextName: ", credentialsId: 'k8s-cred', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://kubernetes.docker.internal:6443') { 
+                     sh 'kubectl apply -f deployment-service.yaml'
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                withKubeConfig(caCertificate: ", clusterName: 'kubernetes', contextName: ", credentialsId: 'k8s-cred', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://kubernetes.docker.internal:6443') { 
+                    sh 'kubectl get pods'
+                    sh 'kubectl get svc '
+                }
+                
             }
         }
     }
