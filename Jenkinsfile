@@ -96,7 +96,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'k8s-token', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://172.31.35.68:6443') {
+                withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'k8s-token', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://172.31.36.114:6443') {
                     sh 'kubectl apply -f deployment-service.yaml'
                 }
             }
@@ -104,7 +104,7 @@ pipeline {
 
         stage('Verify Deployment') {
             steps {
-                withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'k8s-token', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://172.31.35.68:6443') {
+                withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'k8s-token', namespace: 'webapps', restrictKubeConfigAccess: false, serverUrl: 'https://172.31.36.114:6443') {
                     sh 'kubectl get pods'
                     sh 'kubectl get svc'
                 }
