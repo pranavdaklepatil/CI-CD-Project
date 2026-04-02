@@ -1,9 +1,8 @@
-#Create a namespace for the application
+# Create a namespace for the application
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: webapps 
-
+  name: webapps
 ---
 # Create a service account for the application
 apiVersion: v1
@@ -51,26 +50,24 @@ rules:
       - serviceaccounts
       - services
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-
 ---
 # Bind the role to the service account
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: app-rolebinding
-  namespace: webapps 
+  namespace: webapps
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: app-role 
+  name: app-role
 subjects:
-- namespace: webapps 
+- namespace: webapps
   kind: ServiceAccount
-  name: jenkins 
+  name: jenkins
 ---
-# Create secret token for the service account "get the token by kubectl -n webapps describe secret mysecretname"
-# before applying the manifest, ensure you have the correct context
-# kubectl apply -f - <<EOF <<<<<<<----------------------
+# Create secret token for the service account
+# Get the token by running: kubectl -n webapps describe secret mysecretname
 apiVersion: v1
 kind: Secret
 metadata:
@@ -79,4 +76,3 @@ metadata:
   annotations:
     kubernetes.io/service-account.name: jenkins
 type: kubernetes.io/service-account-token
-EOF
