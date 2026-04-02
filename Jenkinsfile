@@ -25,9 +25,9 @@ pipeline {
 
         stage('Test') {
             steps {
-               dir('webapplication') {  
+                
             sh 'mvn compile'
-        }
+        
             }
         }
 
