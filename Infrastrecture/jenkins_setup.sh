@@ -69,6 +69,7 @@ sudo apt-get install -y \
 
 sudo usermod -aG docker jenkins
 sudo usermod -aG docker ubuntu
+sudo systemctl restart jenkins
 
 sudo systemctl enable docker
 sudo systemctl start docker
