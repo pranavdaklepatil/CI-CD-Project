@@ -291,6 +291,14 @@ The image scan catches OS-level vulnerabilities introduced by the base image its
 </p>
  
 ---
+
+### 🌐 Gmail Notification 
+ 
+<p align="center">
+  <img src="./screenshots/Notification-Gmail.png" alt="Gmail Notification" width="900"/>
+</p>
+ 
+---
  
 ### 🌐 Application Running
  
