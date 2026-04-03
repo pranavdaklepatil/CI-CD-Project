@@ -54,7 +54,7 @@ GitHub Push → Jenkins → Maven Build → SonarQube → Trivy (FS)
 ## 🏗️ Pipeline Architecture
  
 <p align="center">
-  <img src="./CICD-Architecture.png" alt="CI/CD Pipeline Architecture" width="900"/>
+  <img src="./screenshots/CICD-Architecture.png" alt="CI/CD Pipeline Architecture" width="900"/>
 </p>
  
 <p align="center">
